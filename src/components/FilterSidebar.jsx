@@ -1,7 +1,9 @@
-import React from 'react';
-import { categories } from '../utils/data';
+import React, { useState } from 'react';
+import { categories } from  "../utils/data"
 
 const FilterSidebar = ({ filters, setFilters }) => {
+  const [localPrice, setLocalPrice] = useState(filters.maxPrice);
+
   const handleCategoryChange = (category) => {
     setFilters(prev => ({
       ...prev,
@@ -12,9 +14,11 @@ const FilterSidebar = ({ filters, setFilters }) => {
   };
 
   const handlePriceChange = (e) => {
+    const value = parseInt(e.target.value);
+    setLocalPrice(value);
     setFilters(prev => ({
       ...prev,
-      maxPrice: parseInt(e.target.value)
+      maxPrice: value
     }));
   };
 
@@ -33,6 +37,7 @@ const FilterSidebar = ({ filters, setFilters }) => {
   };
 
   const resetFilters = () => {
+    setLocalPrice(1000);
     setFilters({
       categories: [],
       maxPrice: 1000,
@@ -63,15 +68,20 @@ const FilterSidebar = ({ filters, setFilters }) => {
       </div>
 
       <div style={styles.section}>
-        <h4 style={styles.subtitle}>Максимальная цена: {filters.maxPrice} ₽</h4>
+        <h4 style={styles.subtitle}>Максимальная цена: {localPrice} ₽</h4>
         <input
           type="range"
           min="0"
           max="1000"
-          value={filters.maxPrice}
+          step="10"
+          value={localPrice}
           onChange={handlePriceChange}
           style={styles.slider}
         />
+        <div style={styles.priceRange}>
+          <span>0 ₽</span>
+          <span>1000 ₽</span>
+        </div>
       </div>
 
       <div style={styles.section}>
@@ -81,7 +91,7 @@ const FilterSidebar = ({ filters, setFilters }) => {
             checked={filters.minRating === 3}
             onChange={handleRatingChange}
           />
-          <span>Рейтинг 3+</span>
+          <span>⭐ Рейтинг 3+</span>
         </label>
       </div>
 
@@ -92,12 +102,12 @@ const FilterSidebar = ({ filters, setFilters }) => {
             checked={filters.onlyAvailable}
             onChange={handleAvailabilityChange}
           />
-          <span>Только доступные</span>
+          <span>✅ Только доступные</span>
         </label>
       </div>
 
       <button onClick={resetFilters} style={styles.resetBtn}>
-        Сбросить все фильтры
+        🗑️ Сбросить все фильтры
       </button>
     </div>
   );
@@ -111,15 +121,21 @@ const styles = {
     position: 'sticky',
     top: '80px',
     height: 'fit-content',
+    boxShadow: 'var(--shadow)',
   },
   title: {
     marginBottom: '1rem',
     color: 'var(--text-primary)',
+    fontSize: '1.3rem',
+    borderBottom: '2px solid var(--accent)',
+    paddingBottom: '0.5rem',
+    display: 'inline-block',
   },
   subtitle: {
-    marginBottom: '0.5rem',
-    fontSize: '0.9rem',
-    color: 'var(--text-secondary)',
+    marginBottom: '0.75rem',
+    fontSize: '1rem',
+    fontWeight: '600',
+    color: 'var(--text-primary)',
   },
   section: {
     marginBottom: '1.5rem',
@@ -131,20 +147,42 @@ const styles = {
     marginBottom: '0.5rem',
     cursor: 'pointer',
     color: 'var(--text-primary)',
+    fontSize: '0.95rem',
+    transition: 'all 0.2s',
+    ':hover': {
+      color: 'var(--accent)',
+    },
   },
   slider: {
     width: '100%',
     cursor: 'pointer',
+    accentColor: 'var(--accent)',
+  },
+  priceRange: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: '0.5rem',
+    fontSize: '0.8rem',
+    color: 'var(--text-secondary)',
   },
   resetBtn: {
     width: '100%',
-    padding: '0.5rem',
+    padding: '0.6rem',
     backgroundColor: 'transparent',
     border: '1px solid var(--accent)',
     color: 'var(--accent)',
     borderRadius: '8px',
     cursor: 'pointer',
     transition: 'all 0.3s',
+    fontSize: '0.95rem',
+    fontWeight: '500',
+    marginTop: '0.5rem',
+    ':hover': {
+      backgroundColor: 'var(--accent)',
+      color: 'white',
+      transform: 'translateY(-2px)',
+      boxShadow: '0 4px 12px rgba(255,107,53,0.3)',
+    },
   },
 };
 
